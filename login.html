@@ -3,31 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>系統登入</title>
+  <title>系統登入 - 資料分析與管理平台</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    /* 頂部一致導覽列 */
+    .top-navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 56px;
+      padding: 0 20px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      z-index: 10;
+      flex-shrink: 0;
+    }
+    .system-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #1a202c;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .system-title::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 18px;
+      background-color: #3182ce;
+      border-radius: 2px;
+    }
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .user-tag {
+      font-size: 13px;
+      color: #718096;
+      background: #edf2f7;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* 主要內容垂直置中區塊 */
+    .main-wrapper {
+      flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      background-color: #f4f6f9;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      padding: 20px;
     }
     .login-card {
       width: 100%;
-      max-width: 360px;
-      padding: 32px 28px;
+      max-width: 380px;
+      padding: 36px 32px;
       background: #ffffff;
       border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      box-sizing: border-box;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
     }
-    h2 {
-      margin: 0 0 24px;
+    .login-card h2 {
+      margin-bottom: 24px;
       text-align: center;
-      color: #2c3e50;
-      font-size: 22px;
+      color: #2d3748;
+      font-size: 20px;
+      font-weight: 600;
     }
     .form-group {
       margin-bottom: 18px;
@@ -45,13 +100,13 @@
       border: 1px solid #cbd5e0;
       border-radius: 6px;
       font-size: 14px;
-      box-sizing: border-box;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
     input[type="text"]:focus,
     input[type="password"]:focus {
       border-color: #3182ce;
+      box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
     }
     button {
       width: 100%;
@@ -63,7 +118,7 @@
       font-size: 15px;
       font-weight: 500;
       cursor: pointer;
-      margin-top: 8px;
+      margin-top: 10px;
       transition: background-color 0.2s;
     }
     button:hover {
@@ -80,26 +135,34 @@
 </head>
 <body>
 
-  <div class="login-card">
-    <h2>使用者登入</h2>
-    <form id="loginForm">
-      <div class="form-group">
-        <label for="username">帳號</label>
-        <input type="text" id="username" autocomplete="off" required autofocus>
-      </div>
-      <div class="form-group">
-        <label for="password">密碼</label>
-        <input type="password" id="password" required>
-      </div>
-      <button type="submit" id="submitBtn">登入</button>
-      <div id="errorMsg" class="error-msg">帳號或密碼錯誤</div>
-    </form>
+  <!-- 與 main.html 保持一致的頂部列 -->
+  <header class="top-navbar">
+    <div class="system-title">資料分析與管理平台</div>
+    <div class="user-actions">
+      <span class="user-tag">系統未登入</span>
+    </div>
+  </header>
+
+  <!-- 登入卡片主區域 -->
+  <div class="main-wrapper">
+    <div class="login-card">
+      <h2>使用者登入</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">帳號</label>
+          <input type="text" id="username" autocomplete="off" required autofocus>
+        </div>
+        <div class="form-group">
+          <label for="password">密碼</label>
+          <input type="password" id="password" required>
+        </div>
+        <button type="submit" id="submitBtn">登入系統</button>
+        <div id="errorMsg" class="error-msg">帳號或密碼錯誤</div>
+      </form>
+    </div>
   </div>
 
   <script>
-    // 預設加碼雜湊值（SHA-256）
-    // admin -> 8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
-    // 3590116 -> 4b23dc0b5714e1043b64bea01fdc39d9091669b87ca984931d16d1ee94535b3f
     const VALID_USER_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
     const VALID_PASS_HASH = "4b23dc0b5714e1043b64bea01fdc39d9091669b87ca984931d16d1ee94535b3f";
 
