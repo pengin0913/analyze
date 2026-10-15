@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>系統管理主頁</title>
+  <script>
+    // 嚴格阻擋未驗證使用者直接透過網址開啟
+    if (!sessionStorage.getItem('auth_user')) {
+      window.location.replace('login.html');
+    }
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #f8fafc;
+    }
+    /* 主版面：垂直彈性佈局 */
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100vh;
+    }
+    /* 頂部操作列 */
+    .top-navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 56px;
+      padding: 0 20px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      z-index: 10;
+      flex-shrink: 0;
+    }
+    .system-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #1a202c;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .system-title::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 18px;
+      background-color: #3182ce;
+      border-radius: 2px;
+    }
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .user-tag {
+      font-size: 13px;
+      color: #718096;
+      background: #edf2f7;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .logout-btn {
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #e53e3e;
+      background-color: #fff5f5;
+      border: 1px solid #fed7d7;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .logout-btn:hover {
+      background-color: #e53e3e;
+      color: #ffffff;
+      border-color: #e53e3e;
+    }
+    /* 主要畫面 iframe 容器 */
+    .content-area {
+      flex: 1;
+      width: 100%;
+      height: calc(100vh - 56px);
+      position: relative;
+      background-color: #ffffff;
+    }
+    .content-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 頂部資訊與登出列 -->
+    <header class="top-navbar">
+      <div class="system-title">資料分析與管理平台</div>
+      <div class="user-actions">
+        <span class="user-tag" id="userBadge">使用者：admin</span>
+        <button class="logout-btn" onclick="logout()">安全登出</button>
+      </div>
+    </header>
+
+    <!-- iframe 嵌入主要分析畫面 -->
+    <main class="content-area">
+      <iframe 
+        id="analyzeFrame" 
+        class="content-frame" 
+        src="analyze.html" 
+        title="資料分析主畫面">
+      </iframe>
+    </main>
+  </div>
+
+  <script>
+    // 取得當前已驗證的使用者並顯示
+    const currentUser = sessionStorage.getItem('auth_user');
+    if (currentUser) {
+      document.getElementById('userBadge').textContent = '使用者：' + currentUser;
+    }
+
+    // 登出流程：清除 session 並返回登入頁
+    function logout() {
+      sessionStorage.removeItem('auth_user');
+      window.location.replace('login.html');
+    }
+  </script>
+</body>
+</html>

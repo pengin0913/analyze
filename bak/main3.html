@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>系統後台主頁</title>
+  <script>
+    // 嚴格阻擋未授權直接輸入網址進入
+    if (!sessionStorage.getItem('auth_user')) {
+      window.location.replace('login.html');
+    }
+  </script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 30px;
+      background-color: #f8fafc;
+      color: #1a202c;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #edf2f7;
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .logout-btn {
+      padding: 8px 16px;
+      background-color: #e53e3e;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+    .logout-btn:hover {
+      background-color: #c53030;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>歡迎進入系統主頁 (main.html)</h1>
+      <button class="logout-btn" onclick="logout()">登出</button>
+    </div>
+    <p>您已順利通過身分驗證！在此處放置您主要的系統功能或教材模組。</p>
+  </div>
+
+  <script>
+    function logout() {
+      sessionStorage.removeItem('auth_user');
+      window.location.replace('login.html');
+    }
+  </script>
+</body>
+</html>

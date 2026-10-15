@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>驗證轉向中...</title>
+  <script>
+    // 檢查 sessionStorage 中是否有登入標記
+    const isAuthenticated = sessionStorage.getItem('auth_user');
+
+    if (isAuthenticated) {
+      window.location.replace('main.html');
+    } else {
+      window.location.replace('login.html');
+    }
+  </script>
+</head>
+<body style="display:flex; justify-content:center; align-items:center; height:100vh; font-family:sans-serif; background:#f5f7fa; margin:0;">
+  <p style="color:#666;">系統驗證中，請稍候...</p>
+</body>
+</html>

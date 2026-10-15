@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>系統登入</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f4f6f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    .login-card {
+      width: 100%;
+      max-width: 360px;
+      padding: 32px 28px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      box-sizing: border-box;
+    }
+    h2 {
+      margin: 0 0 24px;
+      text-align: center;
+      color: #2c3e50;
+      font-size: 22px;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #4a5568;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e0;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      border-color: #3182ce;
+    }
+    button {
+      width: 100%;
+      padding: 11px;
+      background-color: #3182ce;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: #2b6cb0;
+    }
+    .error-msg {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #e53e3e;
+      text-align: center;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <h2>使用者登入</h2>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">帳號</label>
+        <input type="text" id="username" autocomplete="off" required autofocus>
+      </div>
+      <div class="form-group">
+        <label for="password">密碼</label>
+        <input type="password" id="password" required>
+      </div>
+      <button type="submit" id="submitBtn">登入</button>
+      <div id="errorMsg" class="error-msg">帳號或密碼錯誤</div>
+    </form>
+  </div>
+
+  <script>
+    // 預設加碼雜湊值（SHA-256）
+    // admin -> 8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+    // 3590116 -> 4b23dc0b5714e1043b64bea01fdc39d9091669b87ca984931d16d1ee94535b3f
+    const VALID_USER_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
+    const VALID_PASS_HASH = "4b23dc0b5714e1043b64bea01fdc39d9091669b87ca984931d16d1ee94535b3f";
+
+    // 原生 Web Crypto API 雜湊計算函式
+    async function sha256(str) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(str);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    const loginForm = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMsg');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMsg.style.display = 'none';
+
+      const userInput = document.getElementById('username').value.trim();
+      const passInput = document.getElementById('password').value;
+
+      const userHash = await sha256(userInput);
+      const passHash = await sha256(passInput);
+
+      if (userHash === VALID_USER_HASH && passHash === VALID_PASS_HASH) {
+        // 驗證成功，存入工作階段標記（關閉分頁或瀏覽器後自動失效）
+        sessionStorage.setItem('auth_user', 'admin');
+        window.location.replace('main.html');
+      } else {
+        errorMsg.style.display = 'block';
+        document.getElementById('password').value = '';
+        document.getElementById('password').focus();
+      }
+    });
+  </script>
+</body>
+</html>
